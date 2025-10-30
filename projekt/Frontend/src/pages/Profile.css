@@ -1,0 +1,236 @@
+.profile-container {
+  display: flex;
+  flex-direction: row-reverse;
+  height: 100vh;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: #ffffff;
+  border-left: 1px solid #d1d5db;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar-section h3 {
+  color: #374151;
+  font-size: 14px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.sidebar-section ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 25px;
+}
+
+.sidebar-section li {
+  color: #111827;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar-section li:hover {
+  background-color: #f3f4f6;
+}
+
+.sidebar-section li.active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.signout-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.signout-btn:hover {
+  background-color: #dc2626;
+}
+
+.profile-content {
+  flex: 1;
+  padding: 40px;
+}
+
+.profile-content h1 {
+  color: #1f2937;
+  margin-bottom: 24px;
+}
+
+.info-form label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.info-form input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 7px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+}
+
+.save-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 18px;
+}
+
+.save-btn:hover {
+  background-color: #2563eb;
+}
+
+.redeem-section {
+  max-width: 400px;
+}
+
+.redeem-section label {
+  font-weight: bold;
+}
+
+.redeem-section input {
+  width: 190px;
+  margin: 12px 0 10px 0;
+  padding: 7px;
+  font-size: 1rem;
+}
+
+.redeem-btn {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 6px;
+  font-weight: bold;
+}
+
+.redeem-btn:hover {
+  background-color: #059669;
+}
+
+.redeem-message {
+  margin-top: 10px;
+  color: #1d4ed8;
+  font-weight: bold;
+}
+
+.linked-services {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+}
+
+.service-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+}
+
+.whatsapp-icon {
+  background: url('https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg') no-repeat center/contain;
+}
+
+.facebook-icon {
+  background: url('https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png') no-repeat center/contain;
+}
+
+.x-icon {
+  background: url('https://upload.wikimedia.org/wikipedia/commons/7/74/X_logo.png') no-repeat center/contain;
+}
+
+.instagram-icon {
+  background: url('https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png') no-repeat center/contain;
+}
+
+.connect-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.connect-btn:hover {
+  background-color: #2563eb;
+}
+
+.payment-method-section {
+  max-width: 400px;
+}
+
+.payment-method-list {
+  margin-bottom: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.payment-method-list li {
+  background: #f3f4f6;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.payment-method-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-method-form input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+}
+
+.add-payment-btn {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.add-payment-btn:hover {
+  background-color: #059669;
+}
