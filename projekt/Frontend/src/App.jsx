@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Navigation from './components/navigation.jsx';
+import PrivateRoute from './components/privateroute.jsx';
 import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
@@ -19,8 +20,21 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/add-game" element={<AddGamePage />} /> 
+
+          <Route path="/profile" element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+            }
+          />
+
+          <Route path="/add-game" element={
+            <PrivateRoute>
+              <AddGamePage />
+            </PrivateRoute>
+            }
+          />
+          
         </Routes>
       </div>
     </Router>
