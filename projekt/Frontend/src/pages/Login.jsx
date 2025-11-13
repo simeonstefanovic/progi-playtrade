@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, LogIn } from 'lucide-react';
+import { AuthContext } from "../components/authcontext.jsx";
 
 
 export default function LoginPage() {
+  const { isLoggedIn, login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -25,7 +27,8 @@ export default function LoginPage() {
           return;
         }
 
-        localStorage.setItem("token", data.token);
+        login(data.token);
+        // setIsMobileMenuOpen(false);
         navigate("/profile");
       });
   }
