@@ -6,7 +6,8 @@ CREATE TABLE Korisnik
   fotografija MEDIUMBLOB,
   opis VARCHAR(300),
   lokacija blob NOT NULL,
-  email VARCHAR(50) NOT NULL,
+  email VARCHAR(254) NOT NULL,
+  jeAdmin INT NOT NULL,
   PRIMARY KEY (id_korisnik),
   UNIQUE (email)
 );
@@ -20,12 +21,12 @@ CREATE TABLE Zanr
 
 CREATE TABLE Igra
 (
-  naziv VARCHAR(100) NOT NULL,
+  naziv VARCHAR(250) NOT NULL,
   id_igra INT NOT NULL,
   izdavac VARCHAR(100) NOT NULL,
   godina_izdanja INT NOT NULL,
   ocjena_ocuvanosti INT NOT NULL,
-  broj_igraca INT NOT NULL,
+  broj_igraca VARCHAR(10) NOT NULL,
   vrijeme_igranja VARCHAR(15) NOT NULL,
   procjena_tezine INT NOT NULL,
   fotografija MEDIUMBLOB NOT NULL,
@@ -46,8 +47,8 @@ CREATE TABLE interes
 
 CREATE TABLE Ponuda
 (
-  vrijemeKreiranja INT NOT NULL,
-  jeIzvrsena INT NOT NULL,
+  vrijeme_kreiranja INT NOT NULL,
+  jeAktivna INT NOT NULL,
   id_korisnik INT NOT NULL,
   id_igra INT NOT NULL,
   PRIMARY KEY (id_korisnik, id_igra),
