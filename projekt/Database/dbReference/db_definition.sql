@@ -1,6 +1,6 @@
 CREATE TABLE Korisnik
 (
-  id_korisnik INT NOT NULL,
+  id_korisnik INTEGER PRIMARY KEY,
   username VARCHAR(20) NOT NULL,
   passwordHash INT NOT NULL,
   fotografija MEDIUMBLOB,
@@ -8,21 +8,19 @@ CREATE TABLE Korisnik
   lokacija blob NOT NULL,
   email VARCHAR(254) NOT NULL,
   jeAdmin INT NOT NULL,
-  PRIMARY KEY (id_korisnik),
   UNIQUE (email)
 );
 
 CREATE TABLE Zanr
 (
-  id_zanr INT NOT NULL,
-  naziv_zanr VARCHAR(50) NOT NULL,
-  PRIMARY KEY (id_zanr)
+  id_zanr INTEGER PRIMARY KEY,
+  naziv_zanr VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Igra
 (
+  id_igra INTEGER PRIMARY KEY,
   naziv VARCHAR(250) NOT NULL,
-  id_igra INT NOT NULL,
   izdavac VARCHAR(100) NOT NULL,
   godina_izdanja INT NOT NULL,
   ocjena_ocuvanosti INT NOT NULL,
@@ -32,7 +30,6 @@ CREATE TABLE Igra
   fotografija MEDIUMBLOB NOT NULL,
   dodatan_opis VARCHAR(500),
   id_zanr INT NOT NULL,
-  PRIMARY KEY (id_igra),
   FOREIGN KEY (id_zanr) REFERENCES Zanr(id_zanr)
 );
 
@@ -60,6 +57,7 @@ CREATE TABLE ListaZelja
 (
   id_igra INT NOT NULL,
   id_korisnik INT NOT NULL,
+  PRIMARY KEY(id_korisnik, id_igra),
   FOREIGN KEY (id_igra) REFERENCES Igra(id_igra),
   FOREIGN KEY (id_korisnik) REFERENCES Korisnik(id_korisnik)
 );
