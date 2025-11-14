@@ -1,6 +1,4 @@
-import React from 'react';
-
-// A good practice is to group all your simple SVG icons in one file.
+import React from "react";
 
 export const Search = (props) => (
   <svg
