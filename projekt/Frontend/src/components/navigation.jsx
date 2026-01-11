@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'; 
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Box, User, LogIn, LogOut, Menu, X } from 'lucide-react'; 
+import { User, LogIn, LogOut, Menu, X } from 'lucide-react'; 
 import { AuthContext } from './authcontext.jsx';
 
 export default function Navigation() {
@@ -16,21 +16,21 @@ export default function Navigation() {
 
   const getNavLinkClass = ({ isActive }) => 
     isActive
-      ? 'text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-indigo-500 text-sm font-medium'
-      : 'text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium';
+      ? 'text-brand-900 inline-flex items-center px-1 pt-1 border-b-2 border-brand-700 text-sm font-medium'
+      : 'text-brand-700 hover:border-brand-700 hover:text-brand-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium';
 
   const getMobileNavLinkClass = ({ isActive }) =>
     isActive
-      ? 'bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium'
-      : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium';
+      ? 'bg-brand-100 border-brand-700 text-brand-900 block pl-3 pr-4 py-2 border-l-4 text-base font-medium'
+      : 'border-transparent text-brand-700 hover:bg-brand-100 hover:border-brand-700 hover:text-brand-900 block pl-3 pr-4 py-2 border-l-4 text-base font-medium';
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-brand-200 shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
-            <Box className="h-8 w-8 text-indigo-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900">Play Trade</span>
+            <img src="/logo.png" alt="Play Trade" className="h-8 w-8 object-contain" />
+            <span className="ml-2 text-xl font-bold text-brand-900">Play Trade</span>
           </div>
 
           <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -41,12 +41,12 @@ export default function Navigation() {
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             {!isLoggedIn ? (
               <>
-                <NavLink to="/login" className="text-sm font-medium text-gray-500 hover:text-gray-700">
+                <NavLink to="/login" className="text-sm font-medium text-brand-700 hover:text-brand-900">
                   <LogIn className="h-5 w-5 inline-block mr-1" /> Login
                 </NavLink>
                 <NavLink
                   to="/signup"
-                  className="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                  className="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent-600 hover:bg-accent-700"
                 >
                   <User className="h-5 w-5 inline-block mr-1" /> Sign Up
                 </NavLink>
@@ -54,7 +54,7 @@ export default function Navigation() {
             ) : (
               <button
                 onClick={handleLogout}
-                className="text-sm font-medium text-gray-500 hover:text-gray-700 flex items-center"
+                className="text-sm font-medium text-brand-700 hover:text-brand-900 flex items-center"
               >
                 <LogOut className="h-5 w-5 inline-block mr-1" /> Logout
               </button>
@@ -64,7 +64,7 @@ export default function Navigation() {
           <div className="-mr-2 flex items-center sm:hidden">
             <button
               type="button"
-              className="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="bg-brand-200 inline-flex items-center justify-center p-2 rounded-md text-brand-700 hover:text-brand-900 hover:bg-brand-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-600"
               aria-controls="mobile-menu"
               aria-expanded={isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -86,13 +86,13 @@ export default function Navigation() {
             <div className="space-y-1">
               {!isLoggedIn ? (
                 <>
-                  <NavLink to="/login" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100" onClick={() => setIsMobileMenuOpen(false)}>Login</NavLink>
-                  <NavLink to="/signup" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100" onClick={() => setIsMobileMenuOpen(false)}>Sign Up</NavLink>
+                  <NavLink to="/login" className="block px-4 py-2 text-base font-medium text-brand-700 hover:text-brand-900 hover:bg-brand-100" onClick={() => setIsMobileMenuOpen(false)}>Login</NavLink>
+                  <NavLink to="/signup" className="block px-4 py-2 text-base font-medium text-brand-700 hover:text-brand-900 hover:bg-brand-100" onClick={() => setIsMobileMenuOpen(false)}>Sign Up</NavLink>
                 </>
               ) : (
                 <button
                   onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                  className="block w-full text-left px-4 py-2 text-base font-medium text-brand-700 hover:text-brand-900 hover:bg-brand-100"
                 >
                   Logout
                 </button>

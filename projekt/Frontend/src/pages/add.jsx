@@ -8,29 +8,29 @@ export default function AddGamePage() {
       <div className="mb-8">
         <Link
           to="/profile"
-          className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
+          className="flex items-center text-sm font-medium text-brand-700 hover:text-brand-900"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Natrag na profil 
         </Link>
-        <h1 className="mt-4 text-4xl font-extrabold text-gray-900">
+        <h1 className="mt-4 text-4xl font-extrabold text-brand-900">
           Objavi novu igru 
         </h1>
-        <p className="mt-2 text-lg text-gray-600">
+        <p className="mt-2 text-lg text-brand-700">
           Ispunite informacije o igri koju nudite za zamjenu.
         </p>
       </div>
 
       <form className="bg-white p-8 rounded-xl shadow-2xl space-y-8">
         <div className="border-b border-gray-200 pb-8">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-brand-900">
             Osnovne informacije
           </h2>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 htmlFor="game-name"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-brand-700"
               >
                 Naziv 
               </label>
@@ -44,7 +44,7 @@ export default function AddGamePage() {
             <div>
               <label
                 htmlFor="game-genre"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-brand-700"
               >
                 Žanr 
               </label>
@@ -58,7 +58,7 @@ export default function AddGamePage() {
             <div>
               <label
                 htmlFor="game-publisher"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-brand-700"
               >
                 Izdavač
               </label>
@@ -72,7 +72,7 @@ export default function AddGamePage() {
             <div>
               <label
                 htmlFor="game-year"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-brand-700"
               >
                 Godina izdanja
               </label>
@@ -87,14 +87,14 @@ export default function AddGamePage() {
         </div>
 
         <div className="border-b border-gray-200 pb-8">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-brand-900">
             Detalji o igri
           </h2>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label
                 htmlFor="game-condition"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-brand-700"
               >
                 Ocjena očuvanosti (1-5)
               </label>
@@ -113,7 +113,7 @@ export default function AddGamePage() {
             <div>
               <label
                 htmlFor="game-difficulty"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-brand-700"
               >
                 Procjena težine
               </label>
@@ -130,7 +130,7 @@ export default function AddGamePage() {
             <div>
               <label
                 htmlFor="game-players"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-brand-700"
               >
                 Broj igrača
               </label>
@@ -145,7 +145,7 @@ export default function AddGamePage() {
           <div className="mt-6">
             <label
               htmlFor="game-playtime"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-brand-700"
             >
               Vrijeme igranja
             </label>
@@ -159,17 +159,17 @@ export default function AddGamePage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-brand-900">
             Fotografija i opis
           </h2>
           <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-brand-700">
               Fotografija igre
             </label>
             <div className="mt-2 flex items-center justify-center w-full px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
               <div className="space-y-1 text-center">
-                <FileUp className="mx-auto h-12 w-12 text-gray-400" />
-                <div className="flex text-sm text-gray-600">
+                <FileUp className="mx-auto h-12 w-12 text-brand-700" />
+                <div className="flex text-sm text-brand-700">
                   <label
                     htmlFor="file-upload"
                     className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
@@ -184,7 +184,7 @@ export default function AddGamePage() {
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-brand-700">
                   PNG, JPG, GIF up to 10MB
                 </p>
               </div>
@@ -193,7 +193,7 @@ export default function AddGamePage() {
           <div className="mt-6">
             <label
               htmlFor="game-description"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-brand-700"
             >
               Dodatan opis
             </label>

@@ -16,3 +16,19 @@ code {
     monospace;
 } */
 
+:root {
+  --color-brand-900: #452829;
+  --color-brand-700: #57595B;
+  --color-brand-200: #E8D1C5;
+  --color-brand-100: #F3E8DF;
+  --color-accent-600: #2563EB;
+  --color-accent-700: #1D4ED8;
+  --color-accent-100: #DBEAFE;
+}
+
+/* Defaults using the new palette */
+body {
+  background-color: var(--color-brand-100);
+  color: var(--color-brand-700);
+}
+

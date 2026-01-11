@@ -70,8 +70,8 @@ export default function ProfilePage() {
 
   const getTabClass = (tabName) => {
     return activeTab === tabName
-      ? 'border-indigo-500 text-indigo-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg'
-      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg';
+      ? 'border-brand-700 text-brand-900 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg'
+      : 'border-transparent text-brand-700 hover:border-brand-700 hover:text-brand-900 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg';
   };
 
   return (
@@ -91,14 +91,14 @@ export default function ProfilePage() {
             />
           </div>
           <div className="mt-6 md:mt-0 md:ml-8 text-center md:text-left">
-            <h1 className="text-3xl font-extrabold text-gray-900">
+            <h1 className="text-3xl font-extrabold text-brand-900">
               {userProfile.name}
             </h1>
-            <p className="mt-2 text-lg text-gray-600 flex items-center justify-center md:justify-start">
-              <MapPin className="w-5 h-5 mr-2 text-indigo-500" />
+            <p className="mt-2 text-lg text-brand-700 flex items-center justify-center md:justify-start">
+              <MapPin className="w-5 h-5 mr-2 text-brand-700" />
               {userProfile.location}
             </p>
-            <p className="mt-4 text-gray-700 max-w-lg">{userProfile.bio}</p>
+            <p className="mt-4 text-brand-700 max-w-lg">{userProfile.bio}</p>
             <div className="mt-6">
               <button className="px-5 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                 Uredi Profil
@@ -107,14 +107,14 @@ export default function ProfilePage() {
           </div>
         </div>
         <div className="border-t border-gray-200 bg-gray-50 p-6">
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+          <h3 className="text-sm font-semibold text-brand-700 uppercase tracking-wider mb-3">
             Interesi
           </h3>
           <div className="flex flex-wrap gap-2">
             {userProfile.interests.map((interest) => (
-              <span
+                <span
                 key={interest}
-                className="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full"
+                className="px-3 py-1 bg-brand-100 text-brand-900 text-sm font-medium rounded-full"
               >
                 {interest}
               </span>
@@ -157,12 +157,12 @@ export default function ProfilePage() {
       {activeTab === 'myGames' && (
         <div>
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-brand-900">
               Igre koje nudim
             </h2>
             <Link
               to="/add-game"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent-600 hover:bg-accent-700"
             >
               <PlusCircle className="w-5 h-5 mr-2" />
               Dodaj novu igru 
@@ -178,7 +178,7 @@ export default function ProfilePage() {
 
       {activeTab === 'wishlist' && (
         <div className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+          <h2 className="text-2xl font-bold text-brand-900 mb-6 flex items-center">
             <Heart className="w-6 h-6 mr-3 text-red-500" />
             Lista želja 
           </h2>
@@ -199,7 +199,7 @@ export default function ProfilePage() {
                   }}
                 />
                 <div className="p-4">
-                  <h3 className="text-md font-bold text-gray-900 truncate">
+                  <h3 className="text-md font-bold text-brand-900 truncate">
                     {game.title}
                   </h3>
                 </div>
@@ -211,8 +211,8 @@ export default function ProfilePage() {
 
       {activeTab === 'myTrades' && (
         <div className="bg-white shadow-2xl rounded-xl overflow-hidden">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center p-6">
-            <RefreshCw className="w-6 h-6 mr-3 text-blue-500" />
+          <h2 className="text-2xl font-bold text-brand-900 mb-6 flex items-center p-6">
+            <RefreshCw className="w-6 h-6 mr-3 text-brand-700" />
             Povijest zamjena 
           </h2>
           <div className="overflow-x-auto">
@@ -221,25 +221,25 @@ export default function ProfilePage() {
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-brand-700 uppercase tracking-wider"
                   >
                     Status
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-brand-700 uppercase tracking-wider"
                   >
                     Datum 
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-brand-700 uppercase tracking-wider"
                   >
                     Moja ponuda
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-brand-700 uppercase tracking-wider"
                   >
                     Tražena igra 
                   </th>
@@ -259,13 +259,13 @@ export default function ProfilePage() {
                         {trade.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-700">
                       {trade.date}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-brand-900">
                       {trade.offered}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-brand-900">
                       {trade.received}
                     </td>
                   </tr>

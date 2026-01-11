@@ -22,18 +22,18 @@ export default function GameCard({ game }) {
         </div>
       </div>
       <div className="p-6">
-        <h3 className="text-2xl font-bold text-gray-900 mb-3 truncate">
+        <h3 className="text-2xl font-bold text-brand-900 mb-3 truncate">
           {game.title}
         </h3>
-        <div className="space-y-3 text-gray-700">
+        <div className="space-y-3 text-brand-700">
           <div className="flex items-center">
-            <Users className="w-5 h-5 mr-3 text-indigo-500" />
+            <Users className="w-5 h-5 mr-3 text-brand-700" />
             <span>
               <span className="font-semibold">Broj igrača:</span> {game.players}
             </span>
           </div>
           <div className="flex items-center">
-            <Clock className="w-5 h-5 mr-3 text-indigo-500" />
+            <Clock className="w-5 h-5 mr-3 text-brand-700" />
             <span>
               <span className="font-semibold">Vrijeme igranja:</span>{' '}
               {game.playtime}
@@ -41,7 +41,7 @@ export default function GameCard({ game }) {
           </div>
         </div>
         <div className="mt-6">
-          <button className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold text-lg hover:bg-indigo-700 transition-colors duration-200">
+          <button className="w-full bg-accent-600 text-white py-3 px-4 rounded-lg font-semibold text-lg hover:bg-accent-700 transition-colors duration-200">
             Ponudi zamjenu 
           </button>
         </div>
