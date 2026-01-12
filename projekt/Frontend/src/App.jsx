@@ -12,6 +12,7 @@ import AddGamePage from "./pages/add.jsx";
 
 import EditProfile from "./pages/EditProfile.jsx";
 import Games from "./pages/Games.jsx";
+import EditPhoto from "./pages/EditPhoto.jsx";
 
 import "./pages/Profile.css";
 
@@ -78,6 +79,15 @@ function App() {
             element={
               <PrivateRoute>
                 <AddGamePage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/edit-photo"
+            element={
+              <PrivateRoute>
+                <EditPhoto />
               </PrivateRoute>
             }
           />

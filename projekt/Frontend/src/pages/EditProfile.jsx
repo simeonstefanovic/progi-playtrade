@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { User, Mail, Camera, Save, ArrowLeft, MapPin, X, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function EditProfile() {
   const navigate = useNavigate();
   
-  // 1. Setup state with interests array
+  // 1. State setup (Matches Mate Mišo profile)
   const [formData, setFormData] = useState({
     name: 'Mate Mišo',
     location: 'Zagreb, Hrvatska',
@@ -16,7 +16,7 @@ export default function EditProfile() {
 
   const [newInterest, setNewInterest] = useState('');
 
-  // 2. Logic to add/remove interests
+  // 2. Logic for adding/removing interests
   const handleAddInterest = (e) => {
     e.preventDefault();
     if (newInterest.trim() && !formData.interests.includes(newInterest.trim())) {
@@ -44,6 +44,7 @@ export default function EditProfile() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
+      {/* Back to Profile Link */}
       <button 
         onClick={() => navigate('/profile')}
         className="flex items-center text-brand-700 hover:text-accent-600 mb-6 transition font-medium"
@@ -56,12 +57,13 @@ export default function EditProfile() {
         <div className="bg-brand-900 p-6">
           <h1 className="text-2xl font-bold text-white flex items-center">
             <User className="mr-3 w-6 h-6 text-accent-400" />
-            Uredi Profil
+            Postavke Profila
           </h1>
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          {/* Avatar Section */}
+          
+          {/* AVATAR SECTION */}
           <div className="flex flex-col items-center pb-6 border-b border-gray-100">
             <div className="relative">
               <img 
@@ -69,13 +71,17 @@ export default function EditProfile() {
                 alt="Preview" 
                 className="h-24 w-24 rounded-full border-4 border-brand-100 shadow-lg"
               />
-              <button type="button" className="absolute bottom-0 right-0 bg-accent-600 p-2 rounded-full text-white hover:bg-accent-700 shadow-md">
+              <Link 
+                to="/edit-photo" 
+                className="absolute bottom-0 right-0 bg-accent-600 p-2 rounded-full text-white hover:bg-accent-700 shadow-md transition transform hover:scale-110"
+              >
                 <Camera className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
+            <p className="mt-2 text-sm text-brand-600">Kliknite na ikonu za promjenu slike</p>
           </div>
 
-          {/* Name & Location Grid */}
+          {/* Name & Location */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-semibold text-brand-700 mb-2">Ime i prezime</label>
@@ -97,7 +103,7 @@ export default function EditProfile() {
             </div>
           </div>
 
-          {/* Bio Section */}
+          {/* Bio */}
           <div>
             <label className="block text-sm font-semibold text-brand-700 mb-2">O meni</label>
             <textarea
@@ -112,7 +118,6 @@ export default function EditProfile() {
           <div className="border-t border-gray-100 pt-6">
             <label className="block text-sm font-semibold text-brand-700 mb-3">Moji Interesi</label>
             
-            {/* Display existing tags */}
             <div className="flex flex-wrap gap-2 mb-4">
               {formData.interests.map((interest) => (
                 <span 
@@ -131,11 +136,10 @@ export default function EditProfile() {
               ))}
             </div>
 
-            {/* Input to add new tags */}
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Dodaj interes (npr. Deck Building)"
+                placeholder="Dodaj interes..."
                 value={newInterest}
                 onChange={(e) => setNewInterest(e.target.value)}
                 className="flex-grow px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent-600 outline-none"
@@ -150,11 +154,12 @@ export default function EditProfile() {
             </div>
           </div>
 
+          {/* Save Button */}
           <button
             type="submit"
-            className="w-full bg-accent-600 text-white py-3 rounded-lg font-bold hover:bg-accent-700 transition shadow-lg flex items-center justify-center text-lg"
+            className="w-full bg-accent-600 text-white py-4 rounded-xl font-black text-xl hover:bg-accent-700 transition shadow-lg flex items-center justify-center"
           >
-            <Save className="mr-2 w-5 h-5" />
+            <Save className="mr-2 w-6 h-6" />
             Spremi promjene
           </button>
         </form>
