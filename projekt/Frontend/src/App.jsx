@@ -10,6 +10,11 @@ import Signup from "./pages/Signup.jsx";
 import Profile from "./pages/Profile.jsx";
 import AddGamePage from "./pages/add.jsx";
 
+// --- NEW IMPORTS FOR YOUR TASKS ---
+import EditProfile from "./pages/EditProfile.jsx";
+import Games from "./pages/Games.jsx";
+// ----------------------------------
+
 import "./pages/Profile.css";
 
 function App() {
@@ -18,7 +23,11 @@ function App() {
       <Navigation />
       <div className="container-fluid">
         <Routes>
+          {/* Main Home Route */}
           <Route path="/" element={<Home />} />
+
+          {/* VIEW ALL GAMES ROUTE */}
+          <Route path="/games" element={<Games />} />
 
           <Route
             path="/login"
@@ -52,6 +61,16 @@ function App() {
             element={
               <PrivateRoute>
                 <Profile />
+              </PrivateRoute>
+            }
+          />
+
+          {/* EDIT PROFILE ROUTE (Private because you must be logged in to edit) */}
+          <Route
+            path="/edit-profile"
+            element={
+              <PrivateRoute>
+                <EditProfile />
               </PrivateRoute>
             }
           />
