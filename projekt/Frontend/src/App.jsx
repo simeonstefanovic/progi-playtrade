@@ -10,10 +10,8 @@ import Signup from "./pages/Signup.jsx";
 import Profile from "./pages/Profile.jsx";
 import AddGamePage from "./pages/add.jsx";
 
-// --- NEW IMPORTS FOR YOUR TASKS ---
 import EditProfile from "./pages/EditProfile.jsx";
 import Games from "./pages/Games.jsx";
-// ----------------------------------
 
 import "./pages/Profile.css";
 

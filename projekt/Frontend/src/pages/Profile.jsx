@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import GameCard from '../components/gamecard.jsx';
 
+// DUMMY DATA (Normally this would come from an API)
 const userProfile = {
   name: 'Mate Mišo',
   location: 'Zagreb, Hrvatska',
@@ -18,6 +19,7 @@ const userProfile = {
   imageUrl:
     'https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter',
 };
+
 const myGames = [
   {
     id: 1,
@@ -36,6 +38,7 @@ const myGames = [
     image: 'https://placehold.co/400x300/2ecc71/ffffff?text=Čovječe',
   },
 ];
+
 const wishlist = [
   {
     id: 10,
@@ -48,6 +51,7 @@ const wishlist = [
     image: 'https://placehold.co/400x300/9b59b6/ffffff?text=Dune',
   },
 ];
+
 const myTrades = [
   {
     id: 1,
@@ -76,11 +80,12 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="bg-white shadow-2xl rounded-xl overflow-hidden mb-12">
-        <div className="p-8 md:flex">
+      {/* Profile Header Card */}
+      <div className="bg-white shadow-2xl rounded-xl overflow-hidden mb-12 border border-gray-100">
+        <div className="p-8 md:flex items-center">
           <div className="md:flex-shrink-0">
             <img
-              className="h-32 w-32 rounded-full mx-auto md:mx-0"
+              className="h-32 w-32 rounded-full mx-auto md:mx-0 border-4 border-brand-100 shadow-lg"
               src={userProfile.imageUrl}
               alt="User profile"
               onError={(e) => {
@@ -90,31 +95,38 @@ export default function ProfilePage() {
               }}
             />
           </div>
-          <div className="mt-6 md:mt-0 md:ml-8 text-center md:text-left">
+          <div className="mt-6 md:mt-0 md:ml-8 text-center md:text-left flex-grow">
             <h1 className="text-3xl font-extrabold text-brand-900">
               {userProfile.name}
             </h1>
             <p className="mt-2 text-lg text-brand-700 flex items-center justify-center md:justify-start">
-              <MapPin className="w-5 h-5 mr-2 text-brand-700" />
+              <MapPin className="w-5 h-5 mr-2 text-accent-600" />
               {userProfile.location}
             </p>
             <p className="mt-4 text-brand-700 max-w-lg">{userProfile.bio}</p>
+            
             <div className="mt-6">
-              <button className="px-5 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+              {/* FIXED: This button now correctly links to your Edit Profile page */}
+              <Link 
+                to="/edit-profile" 
+                className="inline-flex items-center px-6 py-2 border border-transparent text-sm font-bold rounded-md text-white bg-accent-600 hover:bg-accent-700 transition-all shadow-md transform hover:-translate-y-0.5"
+              >
                 Uredi Profil
-              </button>
+              </Link>
             </div>
           </div>
         </div>
+
+        {/* Interests Section */}
         <div className="border-t border-gray-200 bg-gray-50 p-6">
           <h3 className="text-sm font-semibold text-brand-700 uppercase tracking-wider mb-3">
             Interesi
           </h3>
           <div className="flex flex-wrap gap-2">
             {userProfile.interests.map((interest) => (
-                <span
+              <span
                 key={interest}
-                className="px-3 py-1 bg-brand-100 text-brand-900 text-sm font-medium rounded-full"
+                className="px-3 py-1 bg-brand-100 text-brand-900 text-sm font-medium rounded-full border border-brand-200"
               >
                 {interest}
               </span>
@@ -123,37 +135,36 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* Tabs Navigation */}
       <div className="mb-8">
-        <div className="hidden sm:block">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-              <button
-                onClick={() => setActiveTab('myGames')}
-                className={getTabClass('myGames')}
-              >
-                <Gamepad2 className="w-5 h-5 mr-2 inline-block" />
-                Moje igre 
-              </button>
-              <button
-                onClick={() => setActiveTab('wishlist')}
-                className={getTabClass('wishlist')}
-              >
-                <Heart className="w-5 h-5 mr-2 inline-block" />
-                Lista želja 
-              </button>
-              <button
-                onClick={() => setActiveTab('myTrades')}
-                className={getTabClass('myTrades')}
-              >
-                <RefreshCw className="w-5 h-5 mr-2 inline-block" />
-                Moje zamjene 
-              </button>
-            </nav>
-          </div>
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+            <button
+              onClick={() => setActiveTab('myGames')}
+              className={getTabClass('myGames')}
+            >
+              <Gamepad2 className="w-5 h-5 mr-2 inline-block" />
+              Moje igre 
+            </button>
+            <button
+              onClick={() => setActiveTab('wishlist')}
+              className={getTabClass('wishlist')}
+            >
+              <Heart className="w-5 h-5 mr-2 inline-block text-red-500" />
+              Lista želja 
+            </button>
+            <button
+              onClick={() => setActiveTab('myTrades')}
+              className={getTabClass('myTrades')}
+            >
+              <RefreshCw className="w-5 h-5 mr-2 inline-block text-accent-600" />
+              Moje zamjene 
+            </button>
+          </nav>
         </div>
       </div>
 
-      
+      {/* Tab Contents */}
       {activeTab === 'myGames' && (
         <div>
           <div className="flex justify-between items-center mb-6">
@@ -162,7 +173,7 @@ export default function ProfilePage() {
             </h2>
             <Link
               to="/add-game"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent-600 hover:bg-accent-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent-600 hover:bg-accent-700 transition"
             >
               <PlusCircle className="w-5 h-5 mr-2" />
               Dodaj novu igru 
@@ -186,7 +197,7 @@ export default function ProfilePage() {
             {wishlist.map((game) => (
               <div
                 key={game.id}
-                className="bg-white shadow-xl rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105"
+                className="bg-white shadow-xl rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105 border border-gray-100"
               >
                 <img
                   className="h-48 w-full object-cover"
@@ -210,48 +221,36 @@ export default function ProfilePage() {
       )}
 
       {activeTab === 'myTrades' && (
-        <div className="bg-white shadow-2xl rounded-xl overflow-hidden">
-          <h2 className="text-2xl font-bold text-brand-900 mb-6 flex items-center p-6">
-            <RefreshCw className="w-6 h-6 mr-3 text-brand-700" />
+        <div className="bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-100">
+          <h2 className="text-2xl font-bold text-brand-900 mb-6 flex items-center p-6 border-b border-gray-100">
+            <RefreshCw className="w-6 h-6 mr-3 text-accent-600" />
             Povijest zamjena 
           </h2>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-brand-700 uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-brand-700 uppercase tracking-wider">
                     Status
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-brand-700 uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-brand-700 uppercase tracking-wider">
                     Datum 
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-brand-700 uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-brand-700 uppercase tracking-wider">
                     Moja ponuda
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-brand-700 uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-brand-700 uppercase tracking-wider">
                     Tražena igra 
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {myTrades.map((trade) => (
-                  <tr key={trade.id}>
+                  <tr key={trade.id} className="hover:bg-gray-50 transition">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full ${
-                          trade.status === 'Završeno (Completed)'
+                          trade.status === 'Završeno'
                             ? 'bg-green-100 text-green-800'
                             : 'bg-yellow-100 text-yellow-800'
                         }`}
@@ -278,4 +277,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-
