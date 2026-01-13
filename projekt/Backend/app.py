@@ -3,6 +3,7 @@ from flask_cors import CORS
 from config import Config
 from database import db
 from routes.auth import auth
+from routes.profil import profile
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 import os
@@ -19,6 +20,7 @@ jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 
 app.register_blueprint(auth, url_prefix="/api")
+app.register_blueprint(profile, url_prefix="/api")
 
 
 # Spajanje s React frontendom

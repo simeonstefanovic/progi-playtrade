@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; 
 import {
   User,
@@ -11,15 +11,6 @@ import {
 import GameCard from '../components/gamecard.jsx';
 
 // DUMMY DATA (Normally this would come from an API)
-const userProfile = {
-  name: 'Mate Mišo',
-  location: 'Zagreb, Hrvatska',
-  bio: 'Obožavatelj strateških igara. Tražim igre s puno drvenih komponenti!',
-  interests: ['Strategy', 'Worker Placement', 'Area Control'],
-  imageUrl:
-    'https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter',
-};
-
 const myGames = [
   {
     id: 1,
@@ -71,6 +62,56 @@ const myTrades = [
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('myGames');
+  const [userProfile, setUserProfile] = useState({
+      name: '',
+      location: '',
+      bio: '',
+      email: localStorage.getItem("yourEmail"),
+      interests: [],
+      imageUrl: ''
+    });
+  
+  useEffect(() => {
+    const email = localStorage.getItem("yourEmail");
+    fetch("/api/getProfileData", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        setUserProfile(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+  
+  useEffect(() => {
+    const email = localStorage.getItem("yourEmail");
+    fetch("/api/getProfilePictureBlob", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },  // Fix: Change to application/json
+      body: JSON.stringify({ email })
+    })
+      .then((r) => {
+        if (r.ok) {
+          return r.blob();  // Get the response as a Blob
+        } else {
+          throw new Error("No image found");
+        }
+      })
+      .then((blob) => {
+        const imgUrl = URL.createObjectURL(blob);  // Create object URL from blob
+        setUserProfile(prev => ({ ...prev, imageUrl: imgUrl }));
+      })
+      .catch((err) => {
+        console.error(err);
+        // Fallback to placeholder if no image or error
+        setUserProfile(prev => ({ ...prev, imageUrl: 'https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter' }));
+      });
+  }, []);
+  
 
   const getTabClass = (tabName) => {
     return activeTab === tabName

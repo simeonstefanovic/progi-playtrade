@@ -1,20 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Mail, Camera, Save, ArrowLeft, MapPin, X, Plus } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function EditProfile() {
   const navigate = useNavigate();
   
-  // 1. State setup (Matches Mate Mišo profile)
   const [formData, setFormData] = useState({
-    name: 'Mate Mišo',
-    location: 'Zagreb, Hrvatska',
-    bio: 'Obožavatelj strateških igara. Tražim igre s puno drvenih komponenti!',
-    email: 'mate.miso@fer.hr',
-    interests: ['Strategy', 'Worker Placement', 'Area Control']
+    name: '',
+    location: '',
+    bio: '',
+    email: localStorage.getItem("yourEmail"),
+    interests: [],
+    imageUrl: ''  // Will hold the object URL
   });
 
   const [newInterest, setNewInterest] = useState('');
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const email = localStorage.getItem("yourEmail");
+    fetch("/api/getProfileData", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        setFormData(data);
+      })
+      .catch((err) => {
+        setError("Failed to load profile data");
+        console.error(err);
+      });
+  }, []);
 
   // 2. Logic for adding/removing interests
   const handleAddInterest = (e) => {
@@ -38,9 +56,47 @@ export default function EditProfile() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Saving data:", formData);
-    alert('Promjene su uspješno spremljene!');
-    navigate('/profile');
+    fetch("/api/updateProfile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.error);
+          return;
+        }
+
+        navigate("/profile");
+      });
   };
+
+  // Add this useEffect to fetch and set the profile picture
+  useEffect(() => {
+    const email = localStorage.getItem("yourEmail");
+    fetch("/api/getProfilePictureBlob", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    })
+      .then((r) => {
+        if (r.ok) {
+          return r.blob();  // Get the response as a Blob
+        } else {
+          throw new Error("No image found");
+        }
+      })
+      .then((blob) => {
+        const imgUrl = URL.createObjectURL(blob);  // Create object URL from blob
+        setFormData(prev => ({ ...prev, imageUrl: imgUrl }));
+      })
+      .catch((err) => {
+        console.error(err);
+        // Fallback to placeholder if no image or error
+        setFormData(prev => ({ ...prev, imageUrl: 'https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter' }));
+      });
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -67,7 +123,7 @@ export default function EditProfile() {
           <div className="flex flex-col items-center pb-6 border-b border-gray-100">
             <div className="relative">
               <img 
-                src="https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter" 
+                src={formData.imageUrl}  // Use the fetched imageUrl
                 alt="Preview" 
                 className="h-24 w-24 rounded-full border-4 border-brand-100 shadow-lg"
               />

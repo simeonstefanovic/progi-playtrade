@@ -5,18 +5,34 @@ import { Camera, ArrowLeft, Upload, Trash2, Check } from 'lucide-react';
 export default function EditPhoto() {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState('https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter');
+  const [selectedFile, setSelectedFile] = useState(null);  // Store the file here
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setSelectedFile(file);  // Store the actual file
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
     }
   };
 
   const handleSave = () => {
-    alert("Slika je spremljena!");
-    navigate('/edit-profile');
+    if (!selectedFile) return;
+    const userEmail = localStorage.getItem("yourEmail");
+    const formData = new FormData();
+    formData.append('imageBlob', selectedFile);
+    formData.append('email', userEmail);
+
+    fetch('/api/setProfilePictureBlob', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        alert("Slika je spremljena!");
+        navigate('/edit-profile');
+      })
+      .catch(err => console.error(err));
   };
 
   return (

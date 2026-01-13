@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from database import db
 from models.user import User
+from models.actualUser import Korisnik
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token
 
@@ -22,7 +23,7 @@ def signup():
     data = request.json
     hashed = bcrypt.generate_password_hash(data["password"]).decode("utf-8")
 
-    user = User.query.filter_by(email=data["email"]).first()
+    user = Korisnik.query.filter_by(email=data["email"]).first()
     if user:
         return (
             jsonify(
@@ -34,9 +35,14 @@ def signup():
             401,
         )
 
-    user = User(email=data["email"], password=hashed)
+    user = Korisnik(email=data["email"], passwordHash=hashed, username="Novi korisnik", jeAdmin=0)
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception:
+        print("Failed to register user! Database error!")
+        return jsonify(message="User not created!")
+    
 
     return jsonify(message="User created")
 
@@ -45,11 +51,11 @@ def signup():
 def login():
     data = request.json
 
-    user = User.query.filter_by(email=data["email"]).first()
+    user = Korisnik.query.filter_by(email=data["email"]).first()
     if not user:
         return jsonify(error="Prijava nije uspjela. Provjeri upisane podatke."), 401
 
-    if not bcrypt.check_password_hash(user.password, data["password"]):
+    if not bcrypt.check_password_hash(user.passwordHash, data["password"]):
         return jsonify(error="Prijava nije uspjela. Provjeri upisane podatke."), 401
 
     token = create_access_token(identity=user.id)
@@ -80,14 +86,14 @@ def google_login():
             return jsonify(error="Google token nema email adresu."), 400
 
         # Find or create user
-        user = User.query.filter_by(email=email).first()
+        user = Korisnik.query.filter_by(email=email).first()
         if not user:
             # For Google users we can store a random hash, we never use it directly
             random_password = bcrypt.generate_password_hash(
                 os.urandom(16)
             ).decode("utf-8")
 
-            user = User(email=email, password=random_password)
+            user = Korisnik(email=email, passwordHash=random_password)
             db.session.add(user)
             db.session.commit()
 

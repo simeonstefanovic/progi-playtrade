@@ -29,6 +29,7 @@ export default function LoginPage() {
         }
 
         login(data.token);
+        localStorage.setItem("yourEmail", email);
         navigate("/profile");
       });
   }
