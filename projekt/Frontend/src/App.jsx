@@ -13,6 +13,7 @@ import AddGamePage from "./pages/add.jsx";
 import EditProfile from "./pages/EditProfile.jsx";
 import Games from "./pages/Games.jsx";
 import EditPhoto from "./pages/EditPhoto.jsx";
+import EditMap from "./pages/EditMap.jsx";
 
 import "./pages/Profile.css";
 
@@ -88,6 +89,15 @@ function App() {
             element={
               <PrivateRoute>
                 <EditPhoto />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/edit-map"
+            element={
+              <PrivateRoute>
+                <EditMap />
               </PrivateRoute>
             }
           />
