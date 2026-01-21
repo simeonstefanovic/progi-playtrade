@@ -10,6 +10,10 @@ export default function EditPhoto() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 600 * 1024) { // 600 KB
+        alert('Slika mora biti manja od 600 KB!');
+        return;
+      }
       setSelectedFile(file);  // Store the actual file
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
@@ -70,7 +74,7 @@ export default function EditPhoto() {
           </label>
 
           <button 
-            onClick={() => setPreviewUrl('https://placehold.co/128x128/cccccc/ffffff?text=Mate')}
+            onClick={() => setPreviewUrl('https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter')}
             className="flex items-center justify-center px-6 py-3 bg-red-50 text-red-600 border border-red-200 rounded-lg font-bold hover:bg-red-100 transition"
           >
             <Trash2 className="w-5 h-5 mr-2" />

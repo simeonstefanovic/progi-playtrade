@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 import { Link } from 'react-router-dom'; 
 import {
   User,
@@ -9,6 +12,14 @@ import {
   PlusCircle, 
 } from 'lucide-react';
 import GameCard from '../components/gamecard.jsx';
+
+// Fix default marker icon issue in Leaflet with Webpack
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 // DUMMY DATA (Normally this would come from an API)
 const myGames = [
@@ -60,16 +71,72 @@ const myTrades = [
   },
 ];
 
+const getAddress = async (lat, lng) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+    );
+    const data = await response.json();
+    
+    const city = data.address.city || data.address.town || data.address.village;
+    const country = data.address.country;
+    
+    console.log(`Nominatim result: ${city}, ${country}`);
+    return { city, country };
+  } catch (error) {
+    console.error("Error fetching address:", error);
+  }
+};
+
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('myGames');
   const [userProfile, setUserProfile] = useState({
-      name: '',
-      location: '',
-      bio: '',
-      email: localStorage.getItem("yourEmail"),
-      interests: [],
-      imageUrl: ''
-    });
+    name: '',
+    location: '',
+    bio: '',
+    email: localStorage.getItem("yourEmail"),
+    interests: [],
+    imageUrl: ''
+  });
+  const [mapPosition, setMapPosition] = useState(null);
+  const [mapLoading, setMapLoading] = useState(true);
+  const [address, setAddress] = useState({ city: '', country: '' });
+      useEffect(() => {
+        if (mapPosition && typeof mapPosition.lat === 'number' && typeof mapPosition.lng === 'number') {
+          getAddress(mapPosition.lat, mapPosition.lng).then(result => {
+            if (result) setAddress(result);
+          });
+        }
+      }, [mapPosition]);
+    useEffect(() => {
+      const email = localStorage.getItem("yourEmail");
+      if (!email) {
+        setMapLoading(false);
+        return;
+      }
+      fetch('/api/getLocationBlob', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+        .then(async (res) => {
+          if (!res.ok) throw new Error('No location found');
+          const blob = await res.blob();
+          return blob.text();
+        })
+        .then(text => {
+          try {
+            const loc = JSON.parse(text);
+            if (loc && typeof loc.lat === 'number' && typeof loc.lng === 'number') {
+              setMapPosition(loc);
+            }
+          } catch (e) {
+            // Ignore parse errors, fallback to nothing
+          }
+        })
+        .catch(() => {/* fallback to nothing */})
+        .finally(() => setMapLoading(false));
+    }, []);
   
   useEffect(() => {
     const email = localStorage.getItem("yourEmail");
@@ -80,7 +147,8 @@ export default function ProfilePage() {
     })
       .then((r) => r.json())
       .then((data) => {
-        setUserProfile(data);
+        // Preserve the imageUrl that was set by the picture fetch
+        setUserProfile(prev => ({ ...prev, name: data.name, location: data.location, bio: data.bio, interests: data.interests }));
       })
       .catch((err) => {
         console.error(err);
@@ -91,7 +159,7 @@ export default function ProfilePage() {
     const email = localStorage.getItem("yourEmail");
     fetch("/api/getProfilePictureBlob", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },  // Fix: Change to application/json
+      headers: { "Content-Type": "application/json" }, 
       body: JSON.stringify({ email })
     })
       .then((r) => {
@@ -142,12 +210,10 @@ export default function ProfilePage() {
             </h1>
             <p className="mt-2 text-lg text-brand-700 flex items-center justify-center md:justify-start">
               <MapPin className="w-5 h-5 mr-2 text-accent-600" />
-              {userProfile.location}
+              {address.city && address.country ? `${address.city}, ${address.country}` : userProfile.location}
             </p>
             <p className="mt-4 text-brand-700 max-w-lg">{userProfile.bio}</p>
-            
             <div className="mt-6">
-              {/* FIXED: This button now correctly links to your Edit Profile page */}
               <Link 
                 to="/edit-profile" 
                 className="inline-flex items-center px-6 py-2 border border-transparent text-sm font-bold rounded-md text-white bg-accent-600 hover:bg-accent-700 transition-all shadow-md transform hover:-translate-y-0.5"
@@ -156,6 +222,27 @@ export default function ProfilePage() {
               </Link>
             </div>
           </div>
+          {/* Map element below profile picture */}
+            <div className="mt-6 w-64 h-40 mx-auto md:mx-0 rounded-lg overflow-hidden border border-gray-200 shadow">
+              {mapLoading ? (
+                <div className="flex items-center justify-center h-full text-gray-400">Učitavanje mape...</div>
+              ) : mapPosition ? (
+                <MapContainer center={mapPosition} zoom={13} style={{ height: '100%', width: '100%' }} dragging={false} scrollWheelZoom={false} doubleClickZoom={false} touchZoom={false} boxZoom={false} keyboard={false}>
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <Marker position={mapPosition}>
+                    <Popup>
+                      Lokacija korisnika<br />
+                      Lat: {mapPosition.lat.toFixed(5)}, Lng: {mapPosition.lng.toFixed(5)}
+                    </Popup>
+                  </Marker>
+                </MapContainer>
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">Nema spremljene lokacije</div>
+              )}
+            </div>
         </div>
 
         {/* Interests Section */}

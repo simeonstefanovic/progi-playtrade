@@ -99,6 +99,7 @@ def getProfilePictureBlob():
         return jsonify(error="No profile picture found."), 404
     
 
+
 @profile.post("/setProfilePictureBlob")
 def setProfilePictureBlob():
     if 'imageBlob' not in request.files or 'email' not in request.form:
@@ -122,3 +123,45 @@ def setProfilePictureBlob():
             print(f"Database error: {e}")
             return jsonify(error="Picture not updated."), 500
     return jsonify(error="User not found."), 404
+
+
+# Endpoint to save location as a BLOB
+@profile.post("/setLocationBlob")
+def setLocationBlob():
+    if 'locationBlob' not in request.files or 'email' not in request.form:
+        return jsonify(error="Missing file or email."), 400
+
+    file = request.files['locationBlob']
+    userEmail = request.form['email']
+
+    if file.filename == '':
+        return jsonify(error="No file selected."), 400
+
+    userid = getUserIdFromEmail(userEmail)
+    user = db.session.get(Korisnik, userid)
+    if user:
+        user.lokacija = file.read()  # Save location as BLOB
+        try:
+            db.session.commit()
+            return jsonify(message="New location set!")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Database error: {e}")
+            return jsonify(error="Location not updated."), 500
+    return jsonify(error="User not found."), 404
+
+# Endpoint to get location as a BLOB
+@profile.post("/getLocationBlob")
+def getLocationBlob():
+    dataDict = request.json
+    if not dataDict or "email" not in dataDict:
+        return jsonify(error="Email required."), 400
+
+    userEmail = dataDict["email"]
+    userid = getUserIdFromEmail(userEmail)
+    user = db.session.get(Korisnik, userid)
+    if user and user.lokacija:
+        # Return the binary data as a file response (JSON BLOB)
+        return send_file(BytesIO(user.lokacija), mimetype='application/json')
+    else:
+        return jsonify(error="No location found."), 404

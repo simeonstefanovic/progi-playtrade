@@ -26,7 +26,7 @@ export default function EditProfile() {
     })
       .then((r) => r.json())
       .then((data) => {
-        setFormData(data);
+        setFormData(prev => ({ ...prev, name: data.name, location: data.location, bio: data.bio, interests: data.interests }));
       })
       .catch((err) => {
         setError("Failed to load profile data");
@@ -138,26 +138,27 @@ export default function EditProfile() {
           </div>
 
           {/* Name & Location */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-brand-700 mb-2">Ime i prezime</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent-600 outline-none transition"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-brand-700 mb-2">Lokacija</label>
-              <input
-                type="text"
-                value={formData.location}
-                onChange={(e) => setFormData({...formData, location: e.target.value})}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent-600 outline-none transition"
-              />
-            </div>
-          </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-brand-700 mb-2">Ime i prezime</label>
+                  <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent-600 outline-none transition"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-brand-700 mb-2">Lokacija</label>
+                  <Link 
+                  to="/edit-map" 
+                  className="w-full px-4 py-3 bg-accent-600 text-white rounded-lg hover:bg-accent-700 shadow-md transition flex items-center justify-center font-medium"
+                  >
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Postavi lokaciju
+                  </Link>
+                </div>
+                </div>
 
           {/* Bio */}
           <div>
