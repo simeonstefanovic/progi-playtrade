@@ -153,3 +153,48 @@ def admin_token(app, admin_user):
     with app.app_context():
         token = create_access_token(identity=admin_user['id'])
         return token
+
+
+@pytest.fixture
+def second_user_with_game(app, sample_genre, bcrypt_instance):
+    with app.app_context():
+        hashed = bcrypt_instance.generate_password_hash("password123").decode("utf-8")
+        
+        user = Korisnik(
+            email="trader@example.com",
+            passwordHash=hashed,
+            username="TraderUser",
+            jeAdmin=0
+        )
+        db.session.add(user)
+        db.session.flush()
+        
+        genre = Zanr.query.get(sample_genre['id'])
+        game = Igra(
+            naziv="Ticket to Ride",
+            izdavac="Days of Wonder",
+            godina_izdanja=2004,
+            ocjena_ocuvanosti=5,
+            broj_igraca="2-5",
+            vrijeme_igranja="45-90 min",
+            procjena_tezine=2,
+            dodatan_opis="A train adventure game",
+            id_zanr=genre.id
+        )
+        db.session.add(game)
+        db.session.flush()
+        
+        ponuda = Ponuda(
+            id_korisnik=user.id,
+            id_igra=game.id,
+            jeAktivna=1
+        )
+        db.session.add(ponuda)
+        db.session.commit()
+        
+        return {
+            'user_id': user.id,
+            'email': user.email,
+            'game_id': game.id,
+            'game_title': game.naziv
+        }
