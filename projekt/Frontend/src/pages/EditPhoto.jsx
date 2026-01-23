@@ -5,16 +5,16 @@ import { Camera, ArrowLeft, Upload, Trash2, Check } from 'lucide-react';
 export default function EditPhoto() {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState('https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter');
-  const [selectedFile, setSelectedFile] = useState(null);  // Store the file here
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 600 * 1024) { // 600 KB
+      if (file.size > 600 * 1024) {
         alert('Slika mora biti manja od 600 KB!');
         return;
       }
-      setSelectedFile(file);  // Store the actual file
+      setSelectedFile(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
     }
@@ -22,7 +22,7 @@ export default function EditPhoto() {
 
   const handleSave = () => {
     if (!selectedFile) return;
-    const userEmail = localStorage.getItem("yourEmail");
+    const userEmail = localStorage.getItem("email");
     const formData = new FormData();
     formData.append('imageBlob', selectedFile);
     formData.append('email', userEmail);
@@ -53,7 +53,6 @@ export default function EditPhoto() {
         <h1 className="text-2xl font-bold text-brand-900 mb-2">Promijeni profilnu sliku</h1>
         <p className="text-brand-600 mb-8">Odaberite novu fotografiju koja će biti vidljiva svim korisnicima.</p>
 
-        {/* The Preview Circle */}
         <div className="relative inline-block mb-10">
           <img 
             src={previewUrl} 
@@ -65,7 +64,6 @@ export default function EditPhoto() {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <label className="cursor-pointer flex items-center justify-center px-6 py-3 bg-brand-900 text-white rounded-lg font-bold hover:bg-black transition">
             <Upload className="w-5 h-5 mr-2" />

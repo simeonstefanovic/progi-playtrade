@@ -7,7 +7,7 @@ class Korisnik(db.Model):
     passwordHash = db.Column(db.Integer, nullable=False)
     fotografija = db.Column(BLOB, nullable=True)
     opis = db.Column(db.String(300), nullable=True)
-    lokacija = db.Column(BLOB, nullable=True) # TODO: promijeniti nullable u False
+    lokacija = db.Column(BLOB, nullable=True)
     email = db.Column(db.String(254), nullable=False)
     jeAdmin = db.Column(db.Integer, nullable=False)
 

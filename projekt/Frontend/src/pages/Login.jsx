@@ -12,7 +12,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // ------------------- EMAIL/PASSWORD LOGIN -------------------
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -29,12 +28,11 @@ export default function LoginPage() {
         }
 
         login(data.token);
-        localStorage.setItem("yourEmail", email);
+        localStorage.setItem("email", email);
         navigate("/profile");
       });
   }
 
-  // ------------------- GOOGLE LOGIN -------------------
   async function handleGoogleSuccess(response) {
     try {
       const res = await fetch("/api/google-login", {
@@ -50,8 +48,10 @@ export default function LoginPage() {
         return;
       }
 
-      // Auto-login via Google OAuth
       login(data.token);
+      if (data.email) {
+        localStorage.setItem("email", data.email);
+      }
       navigate("/profile");
     } catch (err) {
       console.error(err);
@@ -82,7 +82,6 @@ export default function LoginPage() {
         <div className="bg-white py-8 px-4 shadow-2xl sm:rounded-lg sm:px-10">
           {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
 
-          {/* ------------------ GOOGLE LOGIN BUTTON ------------------ */}
           <div className="mb-6">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
@@ -105,7 +104,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* ------------------ EMAIL/PASSWORD FORM ------------------ */}
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-brand-700">

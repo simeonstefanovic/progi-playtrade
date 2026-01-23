@@ -9,6 +9,7 @@ import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import Profile from "./pages/Profile.jsx";
 import AddGamePage from "./pages/add.jsx";
+import Admin from "./pages/Admin.jsx";
 
 import EditProfile from "./pages/EditProfile.jsx";
 import Games from "./pages/Games.jsx";
@@ -23,10 +24,8 @@ function App() {
       <Navigation />
       <div className="container-fluid">
         <Routes>
-          {/* Main Home Route */}
           <Route path="/" element={<Home />} />
 
-          {/* VIEW ALL GAMES ROUTE */}
           <Route path="/games" element={<Games />} />
 
           <Route
@@ -65,7 +64,6 @@ function App() {
             }
           />
 
-          {/* EDIT PROFILE ROUTE (Private because you must be logged in to edit) */}
           <Route
             path="/edit-profile"
             element={
@@ -98,6 +96,15 @@ function App() {
             element={
               <PrivateRoute>
                 <EditMap />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <Admin />
               </PrivateRoute>
             }
           />

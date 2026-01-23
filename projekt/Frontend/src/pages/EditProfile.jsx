@@ -9,16 +9,16 @@ export default function EditProfile() {
     name: '',
     location: '',
     bio: '',
-    email: localStorage.getItem("yourEmail"),
+    email: localStorage.getItem("email"),
     interests: [],
-    imageUrl: ''  // Will hold the object URL
+    imageUrl: ''
   });
 
   const [newInterest, setNewInterest] = useState('');
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const email = localStorage.getItem("yourEmail");
+    const email = localStorage.getItem("email");
     fetch("/api/getProfileData", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,7 +26,7 @@ export default function EditProfile() {
     })
       .then((r) => r.json())
       .then((data) => {
-        setFormData(prev => ({ ...prev, name: data.name, location: data.location, bio: data.bio, interests: data.interests }));
+        setFormData(prev => ({ ...prev, name: data.name, location: data.location, bio: data.bio, interests: data.interests || [] }));
       })
       .catch((err) => {
         setError("Failed to load profile data");
@@ -34,7 +34,6 @@ export default function EditProfile() {
       });
   }, []);
 
-  // 2. Logic for adding/removing interests
   const handleAddInterest = (e) => {
     e.preventDefault();
     if (newInterest.trim() && !formData.interests.includes(newInterest.trim())) {
@@ -72,9 +71,8 @@ export default function EditProfile() {
       });
   };
 
-  // Add this useEffect to fetch and set the profile picture
   useEffect(() => {
-    const email = localStorage.getItem("yourEmail");
+    const email = localStorage.getItem("email");
     fetch("/api/getProfilePictureBlob", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -82,25 +80,23 @@ export default function EditProfile() {
     })
       .then((r) => {
         if (r.ok) {
-          return r.blob();  // Get the response as a Blob
+          return r.blob();
         } else {
           throw new Error("No image found");
         }
       })
       .then((blob) => {
-        const imgUrl = URL.createObjectURL(blob);  // Create object URL from blob
+        const imgUrl = URL.createObjectURL(blob);
         setFormData(prev => ({ ...prev, imageUrl: imgUrl }));
       })
       .catch((err) => {
         console.error(err);
-        // Fallback to placeholder if no image or error
         setFormData(prev => ({ ...prev, imageUrl: 'https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter' }));
       });
   }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      {/* Back to Profile Link */}
       <button 
         onClick={() => navigate('/profile')}
         className="flex items-center text-brand-700 hover:text-accent-600 mb-6 transition font-medium"
@@ -119,11 +115,10 @@ export default function EditProfile() {
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           
-          {/* AVATAR SECTION */}
           <div className="flex flex-col items-center pb-6 border-b border-gray-100">
             <div className="relative">
               <img 
-                src={formData.imageUrl}  // Use the fetched imageUrl
+                src={formData.imageUrl}
                 alt="Preview" 
                 className="h-24 w-24 rounded-full border-4 border-brand-100 shadow-lg"
               />
@@ -137,7 +132,6 @@ export default function EditProfile() {
             <p className="mt-2 text-sm text-brand-600">Kliknite na ikonu za promjenu slike</p>
           </div>
 
-          {/* Name & Location */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-brand-700 mb-2">Ime i prezime</label>
@@ -160,7 +154,6 @@ export default function EditProfile() {
                 </div>
                 </div>
 
-          {/* Bio */}
           <div>
             <label className="block text-sm font-semibold text-brand-700 mb-2">O meni</label>
             <textarea
@@ -171,7 +164,6 @@ export default function EditProfile() {
             />
           </div>
 
-          {/* INTERESTS SECTION */}
           <div className="border-t border-gray-100 pt-6">
             <label className="block text-sm font-semibold text-brand-700 mb-3">Moji Interesi</label>
             
@@ -211,7 +203,6 @@ export default function EditProfile() {
             </div>
           </div>
 
-          {/* Save Button */}
           <button
             type="submit"
             className="w-full bg-accent-600 text-white py-4 rounded-xl font-black text-xl hover:bg-accent-700 transition shadow-lg flex items-center justify-center"

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: playtrade-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - backend-data:/app/instance
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=tajnikljuc
+      - JWT_SECRET_KEY=jwttajnikljuc
+      # Email Configuration
+      - EMAIL_ENABLED=true
+      - SMTP_SERVER=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USERNAME=progiplaytrade@gmail.com
+      - "SMTP_PASSWORD=ydhx ecll nsrx iiga"
+      - FROM_EMAIL=progiplaytrade@gmail.com
+    networks:
+      - playtrade-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: playtrade-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - playtrade-network
+    restart: unless-stopped
+
+networks:
+  playtrade-network:
+    driver: bridge
+
+volumes:
+  backend-data:

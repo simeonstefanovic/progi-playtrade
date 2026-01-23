@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Camera, ArrowLeft, Upload, Trash2, Check } from 'lucide-react';
@@ -6,7 +5,6 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-// Fix default marker icon issue in Leaflet with Webpack
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -16,13 +14,11 @@ L.Icon.Default.mergeOptions({
 
 export default function EditMap() {
   const navigate = useNavigate();
-
-  // Default location (Zagreb, Croatia)
   const [position, setPosition] = useState({ lat: 45.815, lng: 15.9819 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const userEmail = localStorage.getItem("yourEmail");
+    const userEmail = localStorage.getItem("email");
     if (!userEmail) {
       setLoading(false);
       return;
@@ -44,10 +40,9 @@ export default function EditMap() {
             setPosition(loc);
           }
         } catch (e) {
-          // Ignore parse errors, fallback to default
         }
       })
-      .catch(() => {/* fallback to default */})
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
@@ -69,12 +64,11 @@ export default function EditMap() {
 
 
   const handleSaveLocation = () => {
-    const userEmail = localStorage.getItem("yourEmail");
+    const userEmail = localStorage.getItem("email");
     if (!userEmail) {
       alert("Nedostaje email korisnika!");
       return;
     }
-    // Convert position to a BLOB (as JSON string)
     const blob = new Blob([JSON.stringify(position)], { type: 'application/json' });
     const formData = new FormData();
     formData.append('locationBlob', blob, 'location.json');

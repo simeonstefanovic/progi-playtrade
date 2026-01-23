@@ -4,14 +4,24 @@ from config import Config
 from database import db
 from routes.auth import auth
 from routes.profil import profile
+from routes.igre import igre
+from routes.zamjene import zamjene
+from routes.admin import admin
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 import os
 
+from models.actualUser import Korisnik
+from models.zanr import Zanr
+from models.interes import Interes
+from models.igra import Igra
+from models.ponuda import Ponuda
+from models.listazelja import ListaZelja
+from models.zamjena import Zamjena, ZamjenaIgra
+
 app = Flask(__name__, static_folder="../Frontend/build", static_url_path="/")
 app.config.from_object(Config)
 
-# CORS samo za development, debug
 if app.config.get("DEBUG", False):
     CORS(app)
 
@@ -21,9 +31,11 @@ bcrypt = Bcrypt(app)
 
 app.register_blueprint(auth, url_prefix="/api")
 app.register_blueprint(profile, url_prefix="/api")
+app.register_blueprint(igre, url_prefix="/api")
+app.register_blueprint(zamjene, url_prefix="/api")
+app.register_blueprint(admin, url_prefix="/api")
 
 
-# Spajanje s React frontendom
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def server_react(path):

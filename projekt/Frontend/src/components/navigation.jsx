@@ -1,16 +1,62 @@
 import React, { useState, useEffect, useContext } from 'react'; 
 import { NavLink, useNavigate } from 'react-router-dom';
-import { User, LogIn, LogOut, Menu, X } from 'lucide-react'; 
+import { User, LogIn, LogOut, Menu, X, Bell, Shield } from 'lucide-react'; 
 import { AuthContext } from './authcontext.jsx';
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { isLoggedIn, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const email = localStorage.getItem('email') || localStorage.getItem('yourEmail');
+
+  useEffect(() => {
+    if (!isLoggedIn || !email) {
+      setPendingCount(0);
+      return;
+    }
+    
+    const fetchPendingCount = () => {
+      fetch(`/api/trades/pending-count?email=${encodeURIComponent(email)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.count !== undefined) {
+            setPendingCount(data.count);
+          }
+        })
+        .catch(err => console.error('Error fetching pending count:', err));
+    };
+
+    fetchPendingCount();
+    const interval = setInterval(fetchPendingCount, 30000);
+    return () => clearInterval(interval);
+  }, [isLoggedIn, email]);
+
+  useEffect(() => {
+    if (!isLoggedIn || !email) {
+      setIsAdmin(false);
+      return;
+    }
+    
+    fetch('/api/checkAdmin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    })
+      .then(res => res.json())
+      .then(data => {
+        setIsAdmin(data.isAdmin === true);
+      })
+      .catch(() => setIsAdmin(false));
+  }, [isLoggedIn, email]);
 
   const handleLogout = () => {
     logout();
     setIsMobileMenuOpen(false);
+    setPendingCount(0);
+    setIsAdmin(false);
     navigate("/");
   };
 
@@ -35,7 +81,21 @@ export default function Navigation() {
 
           <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
             <NavLink to="/" className={getNavLinkClass}>Početna</NavLink>
-            <NavLink to="/profile" className={getNavLinkClass}>Profil</NavLink>
+            <NavLink to="/games" className={getNavLinkClass}>Igre</NavLink>
+            <NavLink to="/profile" className={({ isActive }) => `${getNavLinkClass({ isActive })} relative`}>
+              Profil
+              {pendingCount > 0 && (
+                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {pendingCount}
+                </span>
+              )}
+            </NavLink>
+            {isAdmin && (
+              <NavLink to="/admin" className={getNavLinkClass}>
+                <Shield className="w-4 h-4 mr-1" />
+                Admin
+              </NavLink>
+            )}
           </div>
 
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
@@ -62,6 +122,11 @@ export default function Navigation() {
           </div>
 
           <div className="-mr-2 flex items-center sm:hidden">
+            {pendingCount > 0 && (
+              <span className="mr-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {pendingCount}
+              </span>
+            )}
             <button
               type="button"
               className="bg-brand-200 inline-flex items-center justify-center p-2 rounded-md text-brand-700 hover:text-brand-900 hover:bg-brand-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-600"
@@ -80,7 +145,15 @@ export default function Navigation() {
         <div className="sm:hidden" id="mobile-menu">
           <div className="pt-2 pb-3 space-y-1">
             <NavLink to="/" className={getMobileNavLinkClass} onClick={() => setIsMobileMenuOpen(false)}>Početna</NavLink>
-            <NavLink to="/profile" className={getMobileNavLinkClass} onClick={() => setIsMobileMenuOpen(false)}>Profil</NavLink>
+            <NavLink to="/games" className={getMobileNavLinkClass} onClick={() => setIsMobileMenuOpen(false)}>Igre</NavLink>
+            <NavLink to="/profile" className={getMobileNavLinkClass} onClick={() => setIsMobileMenuOpen(false)}>
+              Profil {pendingCount > 0 && <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">{pendingCount}</span>}
+            </NavLink>
+            {isAdmin && (
+              <NavLink to="/admin" className={getMobileNavLinkClass} onClick={() => setIsMobileMenuOpen(false)}>
+                <Shield className="w-4 h-4 inline mr-1" /> Admin
+              </NavLink>
+            )}
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="space-y-1">

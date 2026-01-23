@@ -3,13 +3,13 @@ from database import db
 from models.actualUser import Korisnik
 from models.zanr import Zanr
 from models.interes import Interes
-from io import BytesIO  # Add this import for binary handling
+from io import BytesIO
 
 profile = Blueprint("profile", __name__)
 
 def getUserIdFromEmail(email):
-    result = db.session.execute(db.select(Korisnik).filter_by(email=email)).scalar_one()
-    return result.id
+    result = db.session.execute(db.select(Korisnik).filter_by(email=email)).scalar_one_or_none()
+    return result.id if result else None
 
 
 @profile.post("/updateProfile")
@@ -23,6 +23,8 @@ def updateProfile():
         
         print(dataDict)
         userid = getUserIdFromEmail(user_email)
+        if not userid:
+            return jsonify(message="User not found."), 404
         
         user_to_update = db.session.get(Korisnik, userid)
         if user_to_update:
@@ -30,11 +32,8 @@ def updateProfile():
                 user_to_update.username = dataDict["name"]
             if "bio" in dataDict:
                 user_to_update.opis = dataDict["bio"]
-            #if "location" in dataDict:
-            #    user_to_update.lokacija = dataDict["location"]
             if "interests" in dataDict:
                 interests = dataDict["interests"]
-                # Clear existing interests first
                 db.session.query(Interes).filter_by(id_korisnik=userid).delete()
                 
                 for interest in interests:
@@ -48,10 +47,8 @@ def updateProfile():
                             print("Commit failed.")
                             db.session.rollback()
                             continue
-                        # Query the newly created genre
                         db_r = db.session.execute(db.select(Zanr).filter_by(naziv_zanr=interest)).scalar_one()
                     
-                    # Create interest with the genre ID
                     new_interest = Interes(id_zanr=db_r.id, id_korisnik=userid)
                     db.session.add(new_interest)
 
@@ -69,8 +66,11 @@ def updateProfile():
 def findProfileData():
     dataDict = request.json
     print(dataDict)
-    if dataDict and "email" in dataDict:
-        userEmail = dataDict["email"]
+    if not dataDict or "email" not in dataDict:
+        return jsonify(error="Email is required."), 400
+    
+    userEmail = dataDict["email"]
+    try:
         userid = getUserIdFromEmail(userEmail)
         user = db.session.get(Korisnik, userid)
         if user:
@@ -80,7 +80,12 @@ def findProfileData():
                     "location":"Zagreb, Hrvatska", "bio":user.opis, "email":user.email, 
                     "interests": interest_names, "imageUrl":'https://placehold.co/128x128/60a5fa/ffffff?text=User&font=inter'
             }
-    return jsonify(data)
+            return jsonify(data)
+        else:
+            return jsonify(error="User not found."), 404
+    except Exception as e:
+        print(f"Error fetching profile: {e}")
+        return jsonify(error="User not found."), 404
 
 @profile.post("/getProfilePictureBlob")
 def getProfilePictureBlob():
@@ -90,12 +95,13 @@ def getProfilePictureBlob():
     
     userEmail = dataDict["email"]
     userid = getUserIdFromEmail(userEmail)
+    if not userid:
+        return jsonify(error="User not found."), 404
+    
     user = db.session.get(Korisnik, userid)
     if user and user.fotografija:
-        # Return the binary data as a file response
-        return send_file(BytesIO(user.fotografija), mimetype='image/jpeg')  # Adjust mimetype if needed (e.g., 'image/png')
+        return send_file(BytesIO(user.fotografija), mimetype='image/jpeg')
     else:
-        # Return a default placeholder or error
         return jsonify(error="No profile picture found."), 404
     
 
@@ -112,9 +118,12 @@ def setProfilePictureBlob():
         return jsonify(error="No file selected."), 400
     
     userid = getUserIdFromEmail(userEmail)
+    if not userid:
+        return jsonify(error="User not found."), 404
+    
     user = db.session.get(Korisnik, userid)
     if user:
-        user.fotografija = file.read()  # Read binary data from file
+        user.fotografija = file.read()
         try:
             db.session.commit()
             return jsonify(message="New picture set!")
@@ -125,7 +134,6 @@ def setProfilePictureBlob():
     return jsonify(error="User not found."), 404
 
 
-# Endpoint to save location as a BLOB
 @profile.post("/setLocationBlob")
 def setLocationBlob():
     if 'locationBlob' not in request.files or 'email' not in request.form:
@@ -138,9 +146,12 @@ def setLocationBlob():
         return jsonify(error="No file selected."), 400
 
     userid = getUserIdFromEmail(userEmail)
+    if not userid:
+        return jsonify(error="User not found."), 404
+    
     user = db.session.get(Korisnik, userid)
     if user:
-        user.lokacija = file.read()  # Save location as BLOB
+        user.lokacija = file.read()
         try:
             db.session.commit()
             return jsonify(message="New location set!")
@@ -150,7 +161,6 @@ def setLocationBlob():
             return jsonify(error="Location not updated."), 500
     return jsonify(error="User not found."), 404
 
-# Endpoint to get location as a BLOB
 @profile.post("/getLocationBlob")
 def getLocationBlob():
     dataDict = request.json
@@ -159,9 +169,11 @@ def getLocationBlob():
 
     userEmail = dataDict["email"]
     userid = getUserIdFromEmail(userEmail)
+    if not userid:
+        return jsonify(error="User not found."), 404
+    
     user = db.session.get(Korisnik, userid)
     if user and user.lokacija:
-        # Return the binary data as a file response (JSON BLOB)
         return send_file(BytesIO(user.lokacija), mimetype='application/json')
     else:
         return jsonify(error="No location found."), 404
