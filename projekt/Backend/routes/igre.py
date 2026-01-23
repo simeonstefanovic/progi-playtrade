@@ -42,7 +42,9 @@ def get_all_games():
     min_players = request.args.get('minPlayers', type=int)
     max_players = request.args.get('maxPlayers', type=int)
     
-    games = Igra.query.all()
+    # Only get games that have active offers
+    active_game_ids = [p.id_igra for p in Ponuda.query.filter_by(jeAktivna=1).all()]
+    games = Igra.query.filter(Igra.id.in_(active_game_ids)).all() if active_game_ids else []
     result = []
     
     for game in games:
