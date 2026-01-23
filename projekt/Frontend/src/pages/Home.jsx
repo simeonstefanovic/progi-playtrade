@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import GameCard from '../components/gamecard.jsx';
-
 import { Search, Filter } from 'lucide-react';
 
 export default function HomePage() {
@@ -46,7 +45,7 @@ export default function HomePage() {
       });
   }, []);
 
-  const parsePlayers = (playersStr) => {
+  const parsePlayers = useCallback((playersStr) => {
     if (!playersStr) return { min: 0, max: Infinity };
     const plusMatch = playersStr.match(/^(\d+)\+$/);
     if (plusMatch) return { min: Number(plusMatch[1]), max: Infinity };
@@ -55,9 +54,9 @@ export default function HomePage() {
     const num = Number(playersStr);
     if (!Number.isNaN(num)) return { min: num, max: num };
     return { min: 0, max: Infinity };
-  };
+  }, []);
 
-  const applyFilters = () => {
+  useEffect(() => {
     const q = query.trim().toLowerCase();
     const cat = category.trim().toLowerCase();
     const min = Number(minPlayers) || 0;
@@ -65,24 +64,16 @@ export default function HomePage() {
 
     const result = allGames.filter((g) => {
       if (q && !g.title.toLowerCase().includes(q)) return false;
-
       if (cat && g.genre && !g.genre.toLowerCase().includes(cat)) return false;
-
       if (difficulty && g.difficulty && g.difficulty !== difficulty) return false;
-
       const p = parsePlayers(g.players);
       if (p.max < min) return false;
       if (p.min > max) return false;
-
       return true;
     });
 
     setFilteredGames(result);
-  };
-
-  useEffect(() => {
-    applyFilters();
-  }, [query, difficulty, category, minPlayers, maxPlayers, allGames]);
+  }, [query, difficulty, category, minPlayers, maxPlayers, allGames, parsePlayers]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

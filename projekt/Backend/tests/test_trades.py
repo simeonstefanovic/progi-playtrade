@@ -188,3 +188,33 @@ class TestGetPendingCount:
         response = client.get('/api/trades/pending-count')
         
         assert response.status_code == 400
+
+
+class TestTradedGamesFiltering:
+    
+    def test_traded_games_not_shown_in_games_list(self, app, client, sample_user, sample_game, second_user_with_game):
+        # Verify both games are initially visible
+        games_before = client.get('/api/games').get_json()
+        game_ids_before = [g['id'] for g in games_before]
+        assert sample_game['id'] in game_ids_before
+        assert second_user_with_game['game_id'] in game_ids_before
+        
+        # Create and accept a trade
+        create_response = client.post('/api/trades', json={
+            'email': second_user_with_game['email'],
+            'trazenaIgraId': sample_game['id'],
+            'ponudjeneIgreIds': [second_user_with_game['game_id']]
+        })
+        trade_id = create_response.get_json()['tradeId']
+        
+        accept_response = client.post(f'/api/trades/{trade_id}/respond', json={
+            'email': sample_user['email'],
+            'action': 'accept'
+        })
+        assert accept_response.status_code == 200
+        
+        # Verify traded games are no longer visible
+        games_after = client.get('/api/games').get_json()
+        game_ids_after = [g['id'] for g in games_after]
+        assert sample_game['id'] not in game_ids_after
+        assert second_user_with_game['game_id'] not in game_ids_after

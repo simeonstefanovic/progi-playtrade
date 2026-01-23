@@ -210,9 +210,9 @@ def respond_to_trade(trade_id):
     
     if action == 'accept':
         trade.status = 'completed'
-        Ponuda.query.filter_by(id_igra=trade.id_trazena_igra).update({'jeAktivna': 0})
+        Ponuda.query.filter_by(id_igra=trade.id_trazena_igra).update({'jeAktivna': 0}, synchronize_session='fetch')
         for zi in trade.ponudjene_igre:
-            Ponuda.query.filter_by(id_igra=zi.id_igra).update({'jeAktivna': 0})
+            Ponuda.query.filter_by(id_igra=zi.id_igra).update({'jeAktivna': 0}, synchronize_session='fetch')
         trade.ponuditelj_vidio = False
         
     elif action == 'reject':

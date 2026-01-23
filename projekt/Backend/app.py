@@ -36,6 +36,11 @@ app.register_blueprint(zamjene, url_prefix="/api")
 app.register_blueprint(admin, url_prefix="/api")
 
 
+@app.route("/api/health")
+def health_check():
+    return {"status": "healthy", "service": "playtrade-backend"}, 200
+
+
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def server_react(path):
