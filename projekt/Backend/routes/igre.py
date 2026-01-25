@@ -42,10 +42,16 @@ def get_all_games():
     min_players = request.args.get('minPlayers', type=int)
     max_players = request.args.get('maxPlayers', type=int)
     
-    games = Igra.query.all()
+    # Only get games that have active offers, along with owner info
+    games_with_offers = db.session.query(Igra, Ponuda, Korisnik).join(
+        Ponuda, Igra.id == Ponuda.id_igra
+    ).join(
+        Korisnik, Ponuda.id_korisnik == Korisnik.id
+    ).filter(Ponuda.jeAktivna == 1).all()
+    
     result = []
     
-    for game in games:
+    for game, ponuda, owner in games_with_offers:
         if query and query not in game.naziv.lower():
             continue
         
@@ -74,15 +80,6 @@ def get_all_games():
             except ValueError:
                 pass
         
-        ponuda = Ponuda.query.filter_by(id_igra=game.id, jeAktivna=1).first()
-        owner_name = None
-        owner_email = None
-        if ponuda:
-            owner = Korisnik.query.get(ponuda.id_korisnik)
-            if owner:
-                owner_name = owner.username
-                owner_email = owner.email
-        
         game_data = {
             'id': game.id,
             'title': game.naziv,
@@ -96,8 +93,8 @@ def get_all_games():
             'genre': game.zanr.naziv_zanr if game.zanr else None,
             'genreId': game.id_zanr,
             'hasImage': game.fotografija is not None,
-            'ownerName': owner_name,
-            'ownerEmail': owner_email
+            'ownerName': owner.username,
+            'ownerEmail': owner.email
         }
         result.append(game_data)
     
