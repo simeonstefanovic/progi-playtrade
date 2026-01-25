@@ -75,13 +75,12 @@ def get_all_games():
                 pass
         
         ponuda = Ponuda.query.filter_by(id_igra=game.id, jeAktivna=1).first()
-        owner_name = None
-        owner_email = None
-        if ponuda:
-            owner = Korisnik.query.get(ponuda.id_korisnik)
-            if owner:
-                owner_name = owner.username
-                owner_email = owner.email
+        if not ponuda:
+            continue
+        
+        owner = Korisnik.query.get(ponuda.id_korisnik)
+        owner_name = owner.username if owner else None
+        owner_email = owner.email if owner else None
         
         game_data = {
             'id': game.id,

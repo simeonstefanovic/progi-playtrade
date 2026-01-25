@@ -156,3 +156,63 @@ class TestDeleteGame:
 
 
 from models.actualUser import Korisnik
+
+
+class TestInactiveGames:
+    
+    def test_inactive_games_not_returned(self, app, client, sample_user, sample_game):
+        """Test that games with jeAktivna=0 are not returned by /api/games"""
+        with app.app_context():
+            # Deactivate the offer for the sample game
+            ponuda = Ponuda.query.filter_by(id_igra=sample_game['id']).first()
+            assert ponuda is not None
+            ponuda.jeAktivna = 0
+            db.session.commit()
+        
+        # Fetch all games
+        response = client.get('/api/games')
+        
+        assert response.status_code == 200
+        data = response.get_json()
+        
+        # Verify the deactivated game is not in the list
+        game_ids = [game['id'] for game in data]
+        assert sample_game['id'] not in game_ids
+    
+    def test_traded_games_not_returned(self, app, client, sample_user, sample_game, second_user_with_game):
+        """Test that games are removed from listings after a trade is accepted"""
+        # Get initial list of games
+        initial_response = client.get('/api/games')
+        assert initial_response.status_code == 200
+        initial_games = initial_response.get_json()
+        initial_game_ids = {game['id'] for game in initial_games}
+        
+        # Verify both games are initially in the list
+        assert sample_game['id'] in initial_game_ids
+        assert second_user_with_game['game_id'] in initial_game_ids
+        
+        # Create a trade
+        create_response = client.post('/api/trades', json={
+            'email': second_user_with_game['email'],
+            'trazenaIgraId': sample_game['id'],
+            'ponudjeneIgreIds': [second_user_with_game['game_id']]
+        })
+        assert create_response.status_code == 201
+        trade_id = create_response.get_json()['tradeId']
+        
+        # Accept the trade
+        accept_response = client.post(f'/api/trades/{trade_id}/respond', json={
+            'email': sample_user['email'],
+            'action': 'accept'
+        })
+        assert accept_response.status_code == 200
+        
+        # Get list of games after trade
+        final_response = client.get('/api/games')
+        assert final_response.status_code == 200
+        final_games = final_response.get_json()
+        final_game_ids = {game['id'] for game in final_games}
+        
+        # Verify both traded games are no longer in the list
+        assert sample_game['id'] not in final_game_ids, "Requested game should be removed after trade"
+        assert second_user_with_game['game_id'] not in final_game_ids, "Offered game should be removed after trade"
